@@ -1,8 +1,17 @@
-# InstrumentSchedule (`SOGT-I-6001` PDF Tag Extractor)
+# InstrumentSchedule (`<location>-I-6001` PDF Tag Extractor)
 
-Python extraction pipeline for **`SOGT-I-6001_00 Instrument Schedule.pdf`** (*Sabah Oil and Gas Terminal (SOGT) Project — As-Built Rev. 00*).
+Python extraction pipeline for **`<location>-I-6001_00 Instrument Schedule.pdf`** (*`<company_name>` — `<location>` Project — As-Built Rev. 00*).
 
 Extracts all **12,980 instrument tags** across all **158 pages** (Page 1 Cover Sheet metadata + Pages 2–158 rotated tabular schedules) into individual per-tag `<TAG>.json` files (e.g., `0-PZT-13047B.json`) and a consolidated master summary index (`data/instruments_summary.json`).
+
+---
+
+## Placeholders for Published Data
+
+All published repository code and documentation use placeholders for project paths, company names, and terminal locations:
+- `<YOUR_FOLDER_NAME>`: Project workspace folder name
+- `<company_name>`: Company name placeholder
+- `<location>`: Terminal / facility location code placeholder
 
 ---
 
@@ -22,14 +31,16 @@ Extracts all **12,980 instrument tags** across all **158 pages** (Page 1 Cover S
    pip install -r requirements.txt
    ```
 
-2. Configure your project folder name in `extract_instrument_schedule.py`:
+2. Configure your placeholders in `extract_instrument_schedule.py`:
    ```python
    FOLDER_NAME = "<YOUR_FOLDER_NAME>"
+   COMPANY_NAME = "<company_name>"
+   LOCATION_CODE = "<location>"
    BASE_DIR = Path(
        os.environ.get("INSTRUMENT_SCHEDULE_DIR", rf"C:\xampp\htdocs\{FOLDER_NAME}")
    )
    ```
-   Or pass `--base-dir` on the command line:
+   Or pass `--base-dir` and `--pdf` on the command line:
    ```bash
    python extract_instrument_schedule.py --base-dir "C:\xampp\htdocs\<YOUR_FOLDER_NAME>"
    ```
@@ -41,7 +52,7 @@ Extracts all **12,980 instrument tags** across all **158 pages** (Page 1 Cover S
 | Band | Field Name | PDF Header | Description / Example (`0-PZT-13047B`) |
 |---:|---|---|---|
 | 1 | `Tag_Number` | `Tag_Number` | Normalized `"0-PZT-13047B"` (`raw_tag_number`: `"0-PZT   -13047B"`) |
-| 2 | `P_ID` | `P_ID` | `"SOGT-B-1300-1"` |
+| 2 | `P_ID` | `P_ID` | `"<location>-B-1300-1"` |
 | 3 | `Service` | `Service` | `"GUMUSUT INCOMING"` |
 | 4 | `Location` | `Location` | `"FIELD"` |
 | 5 | `Instrument_Type_Desc` | `Instrument_Type_Desc` | `"PRESSURE TRANSMITTER - DIAPHRAGM SEAL"` |

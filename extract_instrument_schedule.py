@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-SOGT-I-6001 Rev. 00 Instrument Schedule Extractor
-Project: SABAH OIL AND GAS TERMINAL (SOGT) PROJECT (Job No. SO-2415)
-Source:  C:\\xampp\\htdocs\\<YOUR_FOLDER_NAME>\\SOGT-I-6001_00 Instrument Schedule.pdf
+<location>-I-6001 Rev. 00 Instrument Schedule Extractor
+Owner:   <company_name>
+Project: <location> PROJECT (Job No. SO-2415)
+Source:  C:\\xampp\\htdocs\\<YOUR_FOLDER_NAME>\\<location>-I-6001_00 Instrument Schedule.pdf
 
 Extracts all 12,980 instrument tags across pages 2..158 (plus Cover Sheet metadata
 from page 1) using PyMuPDF character-level bounding boxes (`rawdict`) aligned to
@@ -33,13 +34,17 @@ from typing import Any, Dict, List, Tuple
 import fitz  # PyMuPDF
 
 # ==============================================================================
-# CONFIGURATION: Replace <YOUR_FOLDER_NAME> with your actual project folder name
+# CONFIGURATION PLACEHOLDERS
+# Replace <YOUR_FOLDER_NAME>, <company_name>, and <location> with your values
 # ==============================================================================
 FOLDER_NAME = "<YOUR_FOLDER_NAME>"
+COMPANY_NAME = "<company_name>"
+LOCATION_CODE = "<location>"
+
 BASE_DIR = Path(
     os.environ.get("INSTRUMENT_SCHEDULE_DIR", rf"C:\xampp\htdocs\{FOLDER_NAME}")
 )
-PDF_FILENAME = "SOGT-I-6001_00 Instrument Schedule.pdf"
+PDF_FILENAME = f"{LOCATION_CODE}-I-6001_00 Instrument Schedule.pdf"
 PDF_PATH = BASE_DIR / PDF_FILENAME
 TAGS_DIR = BASE_DIR / "tags"
 DATA_DIR = BASE_DIR / "data"
@@ -79,10 +84,12 @@ BAND_DEFINITIONS: List[Tuple[int, str, List[str], str]] = [
 ]
 
 DOCUMENT_METADATA_BASE: Dict[str, Any] = {
-    "document_no": "SOGT-I-6001",
+    "document_no": f"{LOCATION_CODE}-I-6001",
     "source_file": PDF_FILENAME,
     "document_title": "INSTRUMENT SCHEDULE",
-    "project": "SABAH OIL AND GAS TERMINAL(SOGT) PROJECT",
+    "company": COMPANY_NAME,
+    "location": LOCATION_CODE,
+    "project": f"{LOCATION_CODE} PROJECT",
     "job_no": "SO-2415",
     "department": "INSTRUMENT",
     "contractor": "Samsung Engineering Co., Ltd. (SECL)",
@@ -211,7 +218,7 @@ def sanitize_filename(tag: str) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Extract all instrument tags from SOGT-I-6001 Instrument Schedule PDF into individual JSON files."
+        description="Extract all instrument tags from <location>-I-6001 Instrument Schedule PDF into individual JSON files."
     )
     parser.add_argument(
         "--base-dir",
@@ -223,7 +230,7 @@ def main() -> None:
         "--pdf",
         type=Path,
         default=None,
-        help="Optional explicit path to SOGT-I-6001_00 Instrument Schedule.pdf",
+        help="Optional explicit path to <location>-I-6001_00 Instrument Schedule.pdf",
     )
     args = parser.parse_args()
 
@@ -235,7 +242,7 @@ def main() -> None:
     if not pdf_path.is_file():
         raise FileNotFoundError(
             f"PDF not found at '{pdf_path}'. Please replace '<YOUR_FOLDER_NAME>' "
-            f"in FOLDER_NAME / BASE_DIR or pass --base-dir <path>."
+            f"and '<location>' in configuration or pass --base-dir / --pdf."
         )
 
     t0 = time.perf_counter()
